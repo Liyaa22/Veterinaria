@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz Dermatología Veterinaria</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      padding: 30px;
+    }
+    .container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      padding: 20px;
+      max-width: 700px;
+      margin: auto;
+    }
+    h2 {
+      text-align: center;
+    }
+    .pregunta {
+      margin-top: 20px;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 8px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 20px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .correcto {
+      color: green;
+      font-weight: bold;
+    }
+    .incorrecto {
+      color: red;
+      font-weight: bold;
+    }
+    #puntajeFinal {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Quiz de Patologías Dermatológicas</h2>
+    <div id="quiz"></div>
+    <button onclick="verificar()">Verificar respuestas</button>
+    <div id="puntajeFinal"></div>
+    <button onclick="generarPreguntas()">Siguiente</button>
+  </div>
+
+  <script>
+    const preguntas = [
+      {
+        texto: "¿Con que razas se asocia la dermatitis atopica?",
+        respuesta: ["labrador retriever", "golden retriever", "bulldog"]
+      },
+      {
+        texto: "¿Qué razas son comúnmente afectada por dermatitis por Malassezia?",
+        respuesta: ["caniche", "basset hound", "bulldog", "west highland white terrier"]
+      },
+      {
+        texto: "¿Qué razas son comúnmente afectada por alopecia X",
+        respuesta: ["pomerania", "miniatura schnauzer", "chow chow"]
+      },
+      {
+        texto: "¿Qué razas son comúnmente afectada por dermatitis alergica a las pulgas?",
+        respuesta: ["dalmata", "basset hound", "beagle", "boxer"]
+      },
+      {
+        texto: "¿Qué razas son comúnmente afectada por pioderma?",
+        respuesta: ["bulldog", "cocker spaniel", "pastor aleman"]
+      },
+      {
+        texto: "¿Qué razas son comúnmente afectada por distrofia de la queratina?",
+        respuesta: ["terrier irlandes", "bedlington terrier"]
+      },
+      {
+        texto: "¿Qué razas son comúnmente afectada por dermatitis humeda aguda?",
+        respuesta: ["shar pei", "bulldog", "bulldog frances"]
+      },
+      {
+        texto: "¿Qué enfermedades son conmunmente asociadas desde el nacimiento hasta los 6 meses?",
+        respuesta: ["dermatitis por dermatofitos, sarna sarcoptica"]
+      },
+      {
+        texto: "¿Qué enfermedades son conmunmente asociadas desde los 7 meses hasta los 3 años?",
+        respuesta: ["dermatitis atopica, dermatitis por malassezia"]
+      },
+      {
+        texto: "¿Qué enfermedades son conmunmente asociadas desde los 3 años hasta los 8 años?",
+        respuesta: ["alopecia x, pioderma, dermatitis alergica a las pulgas"]
+      },
+      {
+        texto: "¿Qué enfermedades son conmunmente asociadas a mayores de 6 años?",
+        respuesta: ["dermatitis humeda aguda, neoplasias cutaneas"]
+      }, 
+      {
+        texto: "De las lesiones primarias, ¿que descripcion corresponde a la macula?",
+        respuesta: ["lesion plana, coloracion alternada en la piel, no sobresale del nivel cutaneo, puede ser de color rojo, marron, blanco o negro"]
+      },
+      {
+        texto: "De las lesiones primarias, ¿que descripcion corresponde a la papula?",
+        respuesta: ["pequeña elevacion solida en la piel, generalmente menos de 1cm de diametro, puede ser de color rojo, rosa o piel"]
+      },
+      {
+        texto: "De las lesiones primarias, ¿que descripcion corresponde a la pustula?",
+        respuesta: ["lesion cutanea elevada que contiene pus en su interior"]
+      },
+      {
+        texto: "De las lesiones primarias, ¿que descripcion corresponde a la vesicula?",
+        respuesta: ["pequeña elevacion de la piel que contiene liquido claro o seroso en su interior"]
+      },
+      {
+        texto: "De las lesiones primarias, ¿que descripcion corresponde a la ronchas?",
+        respuesta: ["zona elevada de la piel, generalmente roja e inflamada, causada por reaccion alergica o urticaria"]
+      },
+      {
+        texto: "De las lesiones primarias, ¿que descripcion corresponde a los habones?",
+        respuesta: ["ronchas elevadas y palidas, causadas por picaduras de insectos o alergias"]
+      },
+      {
+        texto: "De las lesiones primarias, ¿que descripcion corresponde al nodulo?",
+        respuesta: ["lesion solida, elevada y palpable en la piel, puede variar en tamaño y profundidad, puede ser benigno o maligno"]
+      },
+      {
+        texto: "De las lesiones primarias, ¿que descripcion corresponde al tumor o neoplasia?",
+        respuesta: ["masa anormal de tejido, puede ser benigna o maligna, puede ser visible o palpable en la piel"]
+      },
+      {
+        texto: "De las lesiones secundarias, ¿que descripcion corresponde a los collaretes espidermicos?",
+        respuesta: ["anillo de escamas o costras, rodea un area de piel inflamada o irritada"]
+      },
+      {
+        texto: "De las lesiones secundarias, ¿que descripcion corresponde a la cicatriz?",
+        respuesta: ["tejido fibroso, remblaza la piel normal despues de una lesion o inflamacion, puede ser una marca visible en la piel"]
+      },
+      {
+        texto: "De las lesiones secundarias, ¿que descripcion corresponde a la excoriacion?",
+        respuesta: ["erosion superficial, causada por rascado, friccion o trauma"]
+      },
+      {
+        texto: "De las lesiones secundarias, ¿que descripcion corresponde a la erosion?",
+        respuesta: ["perdida superficial de la capa superior de la piel, puede ser causada por traumatismos o enfermedades cutaneas"]
+      },
+      {
+        texto: "De las lesiones secundarias, ¿que descripcion corresponde a la ulcera?",
+        respuesta: ["lesion abierta en la piel o membranas mucosas que afecta las capas mas profndas de la piel, puede ser folorosa y propensa a infecciones"]
+      },
+      {
+        texto: "De las lesiones secundarias, ¿que descripcion corresponde a la fisicula?",
+        respuesta: ["paso anormal entre dos areas del cuerpo, puede estar reverstido por tejido de granulacion"]
+      },
+      {
+        texto: "De las lesiones secundarias, ¿que descripcion corresponde a la liquenificacion?",
+        respuesta: ["engrosamiento cronico y endurecimiento de la piel, por rascado persistente o frotamiento"]
+      },
+      {
+        texto: "De las lesiones secundarias, ¿que descripcion corresponde a los callos?",
+        respuesta: ["area engresada de la piel, se desarrolla en respuesta a la presion repetida o ficcion, puede ser dolorosa"]
+      }
+    ];
+
+    let preguntasActuales = [];
+
+    function generarPreguntas() {
+      const quizDiv = document.getElementById("quiz");
+      const puntajeDiv = document.getElementById("puntajeFinal");
+      quizDiv.innerHTML = "";
+      puntajeDiv.innerHTML = "";
+      preguntasActuales = preguntas.sort(() => 0.5 - Math.random()).slice(0, 5);
+
+      preguntasActuales.forEach((pregunta, index) => {
+        const div = document.createElement("div");
+        div.className = "pregunta";
+        div.innerHTML = `
+          <label><strong>${pregunta.texto}</strong></label>
+          <input type="text" id="respuesta${index}">
+          <div id="resultado${index}"></div>
+        `;
+        quizDiv.appendChild(div);
+      });
+    }
+
+    function verificar() {
+      let puntaje = 0;
+      preguntasActuales.forEach((pregunta, index) => {
+        const respuestaInput = document.getElementById(`respuesta${index}`).value.trim().toLowerCase();
+        const resultadoDiv = document.getElementById(`resultado${index}`);
+
+        if (pregunta.respuesta.includes(respuestaInput)) {
+          resultadoDiv.className = "correcto";
+          resultadoDiv.innerHTML = "¡Correcto!";
+          puntaje++;
+        } else {
+          resultadoDiv.className = "incorrecto";
+          resultadoDiv.innerHTML = `Incorrecto. Respuesta correcta: <span class='incorrecto'>${pregunta.respuesta[0]}</span>.`;
+        }
+      });
+
+      const puntajeDiv = document.getElementById("puntajeFinal");
+      puntajeDiv.innerHTML = `Puntaje obtenido: ${puntaje} / ${preguntasActuales.length}`;
+    }
+
+    window.onload = generarPreguntas;
+  </script>
+</body>
+</html>
